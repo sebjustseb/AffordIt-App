@@ -27,20 +27,3 @@ try {
 
 getApi(requestUrl);
 
-// var requestUrl = '';
-
-// var responseText = document.getElementById('response-text');
-
-// function getApi(requestUrlArg) {
-//   fetch(requestUrlArg)
-//   .then(function (response) {
-//     console.log(response);
-//     if (response.status === 200) {
-//       responseText.textContent = response.status;
-//     }
-//     return response.json();
-//   });
-// }
-
-// getApi(requestUrl);
-
