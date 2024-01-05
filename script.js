@@ -65,7 +65,7 @@ const options = {
 	}
 };
 
-async () => {
+(async () => {
 		try {
 			const response = await fetch(url, options);
 			const result = await response.text();
@@ -73,7 +73,7 @@ async () => {
 		} catch (error) {
 			console.error(error);
 		}
-	}
+	})
 }
 
 function getAirportCode(destination){
