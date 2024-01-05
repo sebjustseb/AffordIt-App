@@ -73,7 +73,13 @@ function onFormSubmit(event){
 
 	//Save search data
 	saveUserInput(originInput, originCode, destinationInput, destinationCode, startDateInput, endDateInput, budgetInput);
+displayResults();
 }
+function displayResults (){
+	console.log("Display Attempt")
+		document.location.replace("./searchresults.html");}
+
+
 
 function getFlight(){//source, destination, beginDate, returnDate){
 	const url = 'https://tripadvisor16.p.rapidapi.com/api/v1/flights/searchFlights?sourceAirportCode=BOM&destinationAirportCode=DEL&date=2024-01-18&itineraryType=ROUND_TRIP&sortOrder=PRICE&numAdults=1&numSeniors=0&classOfService=ECONOMY&returnDate=2024-01-22&pageNumber=1&currencyCode=USD';
@@ -85,7 +91,7 @@ const options = {
 	}
 };
 
-	(async () => {
+(async () => {
 		try {
 			const response = await fetch(url, options);
 			const result = await response.text();
@@ -108,7 +114,6 @@ var options = {
 		'X-RapidAPI-Host': 'tripadvisor16.p.rapidapi.com'
 	}
 };
-
 ( async () => {
 try {
 	console.log("awaiting fetch...");
@@ -118,7 +123,7 @@ try {
 	console.log(airportCode);
 	return airportCode;
 } catch (error) {
-	console.error(error);
+    console.error(error);
 }
 })();
 }
