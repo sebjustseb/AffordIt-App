@@ -1,25 +1,52 @@
 //main focus is to make sure we are acquiring data from our API
 var origin = document.querySelector('#origin');
 var destination = document.querySelector('#destination');
-var startDate = document.getElementById('#startDate');
-var endDate = document.getElementById('#endDate');
-var budget = document.getElementById('#budget');
+var startDate = document.querySelector('#startDate');
+var endDate = document.querySelector('#endDate');
+var budget = document.querySelector('#budget');
 var searchBtn = document.querySelector('#search');
 var form = document.getElementById('#form');
 
 var destinationCode = '';
 var originCode = '';
 
-//console.log("Searching destination=" + destination);
+//Locally store search info
+function saveUserInput(originCity, originCode, destinationCity, destinationCode, startDate, endDate, budget) {
+
+	var newSearch = {
+		startCity: originCity,
+		startCityCode: originCode,
+		endCity: destinationCity,
+		endCityCode: destinationCode,
+		startDate: startDate,
+		endDate: endDate,
+		budget: budget,
+	  }
+  
+	  // add item to local storage
+	  var search = []; //readSavedSearchFromStorage();
+	  search.push(newSearch);
+	  localStorage.setItem('search', JSON.stringify(search));
+
+}
 
 function onFormSubmit(event){
 	event.preventDefault();
+	var originInput = origin.value;
+	var destinationInput = destination.value;
+	var startDateInput = startDate.value;
+	var endDateInput = endDate.value;
+	var budgetInput = budget.value;
+
 	originCode = getAirportCode(origin.value);
 	destinationCode = getAirportCode(destination.value);
 
-	console.log("Searching origin=" + origin.value);
-	console.log("Searching destination=" + destination.value);
-	//getFlight(originCode, destinationCode);
+	console.log("Searching origin=" + originInput);
+	console.log("Searching destination=" + destinationInput);
+	getFlight(originCode, destinationCode);
+
+	//Save search data
+	saveUserInput(originInput, originCode, destinationInput, destinationCode, startDateInput, endDateInput, budgetInput);
 }
 
 function getFlight(){//source, destination, beginDate, returnDate){
