@@ -19,9 +19,10 @@ function onFormSubmit(event){
 
 	console.log("Searching origin=" + origin.value);
 	console.log("Searching destination=" + destination.value);
+	//getFlight(originCode, destinationCode);
 }
 
-function getFlight(){
+function getFlight(){//source, destination, beginDate, returnDate){
 	const url = 'https://tripadvisor16.p.rapidapi.com/api/v1/flights/searchFlights?sourceAirportCode=BOM&destinationAirportCode=DEL&date=2024-01-18&itineraryType=ROUND_TRIP&sortOrder=PRICE&numAdults=1&numSeniors=0&classOfService=ECONOMY&returnDate=2024-01-22&pageNumber=1&currencyCode=USD';
 const options = {
 	method: 'GET',
