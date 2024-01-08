@@ -79,53 +79,41 @@ displayResults();
 }
 function displayResults (){
 	console.log("Display Attempt")
-		document.location.replace("./searchresults.html");}
-
-
-
-		async function getFlight(sourceAirportCode, destinationAirportCode, date, returnDate, sortOrder = 'PRICE', numAdults = 1, currencyCode = 'USD') {
-			const url = `https://tripadvisor16.p.rapidapi.com/api/v1/flights/searchFlights?per_page=1&sourceAirportCode=${sourceAirportCode}&destinationAirportCode=${destinationAirportCode}&date=${date}&itineraryType=ROUND_TRIP&sortOrder=${sortOrder}&numAdults=${numAdults}&numSeniors=0&classOfService=ECONOMY&returnDate=${returnDate}&pageNumber=1&currencyCode=${currencyCode}`;
-			const options = {
-				method: 'GET',
-				headers: {
-					'X-RapidAPI-Key': '0cb37aec7cmsh25789bb5d9bc742p141261jsn7dd8dbf065f8',
-					'X-RapidAPI-Host': 'tripadvisor16.p.rapidapi.com'
-				}
-			};
-
-			try {
-				const response = await fetch(url, options);
-		
-				// Check if the response is successful (status code 2xx)
-				if (response.ok) {
-					const result = await response.json();
-					console.log(result);
-		
-					// Loop through the result and create table rows
-					for (var i = 0; i < result.length; i++) {
-						var createTableRow = document.createElement('tr');
-						var tableData = document.createElement('td');
-						var link = document.createElement('a');
-		
-						link.textContent = result[i].html_url;
-						link.href = result[i].html_url;
-		
-						tableData.appendChild(link);
-						createTableRow.appendChild(tableData);
-						tableBody.appendChild(createTableRow);
-					}
-				} else {
-					// Log the error status and status text
-					console.error(`Error: ${response.status} - ${response.statusText}`);
-				}
-			} catch (error) {
-				// Log any other unexpected errors
-				console.error(error);
-			}
+		// document.location.replace("./searchresults.html");}
+}
+async function getFlight(sourceAirportCode, destinationAirportCode, date, returnDate, sortOrder = 'PRICE', numAdults = 1, currencyCode = 'USD') {
+	const url = `https://tripadvisor16.p.rapidapi.com/api/v1/flights/searchFlights?per_page=1&sourceAirportCode=${sourceAirportCode}&destinationAirportCode=${destinationAirportCode}&date=${date}&itineraryType=ROUND_TRIP&sortOrder=${sortOrder}&numAdults=${numAdults}&numSeniors=0&classOfService=ECONOMY&returnDate=${returnDate}&pageNumber=1&currencyCode=${currencyCode}`;
+	//var flightResults = data.flights.purchaseLinks.totalPrice
+	const options = {
+		method: 'GET',
+		headers: {
+			'X-RapidAPI-Key': '0cb37aec7cmsh25789bb5d9bc742p141261jsn7dd8dbf065f8',
+			'X-RapidAPI-Host': 'tripadvisor16.p.rapidapi.com'
 		}
+	};
+
+	try {
+		const response = await fetch(url, options);
+
+		// Check if the response is successful (status code 2xx)
+		if (response.ok) {
+			const result = await response.json();
+			console.log(result);
+			// // Loop through the result and create table rows
+			 //for (var i = 0; i < result.length; i++) {
+			   var priceCell.textContent = result[i].price;
+		} else {
+			// Log the error status and status text
+			console.error(`Error: ${response.status} - ${response.statusText}`);
+		}
+	} catch (error) {
+		// Log any other unexpected errors
+		console.error(error);
+	}
+}
 
 
-getFlight('BOM', 'DEL', '2024-01-18', '2024-01-22');
+getFlight('BOM', 'DEL', '2024-01-18', '2024-01-22',);
 
 
 function getAirportCode(destination){
