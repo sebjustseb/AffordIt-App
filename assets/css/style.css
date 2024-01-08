@@ -1,4 +1,18 @@
-#hero{
+body {
+    background-image: url("./../images/runwayBkg2.jpeg");
+    height: 900px;
+    font-family: 'Lora', serif;
+}
+
+input {
+    font-family: 'Lora', serif;
+}
+
+button {
+    font-family: 'Lora', serif;
+}
+
+#hero {
     width: 50%;
     margin-left: 25%;
 }

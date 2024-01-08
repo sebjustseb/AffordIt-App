@@ -62,17 +62,18 @@ function onFormSubmit(event){
 	var endDateInput = endDate.value;
 	var budgetInput = budget.value;
 
-	originCode = "LAX";//getAirportCode(origin.value);
-	destinationCode = "LON";//getAirportCode(destination.value);
+	originCode = getAirportCode(origin.value);
+	destinationCode = getAirportCode(destination.value);
 	destId = getDestId(destinationInput); //hotel dest_Id (booking)
 	console.log('Hi Sebastian');
 	console.log(destinationInput);
 	console.log("Searching origin=" + originInput);
 	console.log("Searching destination=" + destinationInput);
-	//getFlight(originCode, destinationCode);
+	getFlight(originCode, destinationCode);
 	console.log("Booking dest_ID for " + destinationInput);
 	getDestId(destinationInput);
-
+  
+	
 	//Save search data
 	saveUserInput(originInput, originCode, destinationInput, destinationCode, startDateInput, endDateInput, budgetInput);
 displayResults();
