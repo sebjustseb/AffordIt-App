@@ -77,7 +77,6 @@ function onFormSubmit(event){
 	saveUserInput(originInput, originCode, destinationInput, destinationCode, startDateInput, endDateInput, budgetInput);
 displayResults();
 }
-
 function displayResults (){
 	console.log("Display Attempt")
 		document.location.replace("./searchresults.html");}

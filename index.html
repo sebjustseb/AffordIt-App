@@ -3,38 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="./css/style.css" />
+    <title>Afford It App</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="./assets/css/style.css" />
 </head>
 <body>
-    <h1> Can I Afford this trip?</h1>
-    <form>
-    <div>
-        <label> starting origin</label>
-        <input type="text">
+    <div id="hero" class="hero-body">
+        <h1 class="title"> Enter your search to see if you can afford to take a trip!</h1>
+        <form id="form">
+
+            <div class="field">
+                <label class="label">Starting Origin</label>
+                <input id="origin" class="input is-success" type="text">
+            </div>
+            <div class="field">
+                <label class="label">Destination</label>
+                <input id="destination" class="input is-success" type="text" placeholder="london">
+            </div>
+            <div class="field">
+                <label class="label"> Budget </label>
+                <input id="budget" class="input is-success" type="text">
+            </div>
+            <div class="field">
+                <label class="label"> Starting Date </label>
+                <input id="startDate" class="input is-success" type="date">
+            </div>
+            <div class="field">
+                <label class="label"> Ending Date </label>
+                <input id="endDate" class="input is-success" type="date">
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <button id="search" class="button is-primary" type="submit"> Can I afford it?</button>
+                </div>
+            </div>
+
+        </form>
     </div>
-    <div>
-        <label> destination</label>
-        <input type="text">
-    </div>
-    <div>
-        <label> budget </label>
-        <input type="text">
-    </div>
-    <div>
-        <label> starting date </label>
-        <input type="date">
-    </div>
-    <div>
-        <label> ending date </label>
-        <input type="date">
-    </div>
-    <div>
-        <button type="submit"> Can I afford it?</button>
-    </div>
-    </form>
-    
-    <script type="text/javascript" src="./script.js">
+
+    <script type="text/javascript" src="./assets/js/script.js">
     </script>
 </body>
 </html>
