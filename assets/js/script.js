@@ -115,8 +115,8 @@ async function getHotelPrice() {
 			if (count < duration) { 
 			for ( const key in m ) {
 		  
-			  console.log( key ); // "who"
-			  console.log( m[key] ); // "Arthur"
+			  console.log( key );
+			  console.log( m[key] );
 				total+=m[key];
 			}
 			}
