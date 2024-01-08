@@ -224,12 +224,4 @@ try {
 })();
 }
 
-
-//hotel function
-//get dest_id (booking)
-
-//use dest_id, dates to fetch hotel with lowest price
-// function getHotel() {
-
-// }
 searchBtn.addEventListener("click", onFormSubmit);
