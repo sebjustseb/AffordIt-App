@@ -9,6 +9,7 @@ var form = document.getElementById('#form');
 
 var destinationCode = '';
 var originCode = '';
+var isAffordable = false;
 
 //Locally store search info
 function saveUserInput(originCity, originCode, destinationCity, destinationCode, startDate, endDate, budget) {
@@ -21,6 +22,7 @@ function saveUserInput(originCity, originCode, destinationCity, destinationCode,
 		startDate: startDate,
 		endDate: endDate,
 		budget: budget,
+		canAfford: isAffordable,
 	  }
   
 	  // add item to local storage
@@ -60,14 +62,14 @@ function onFormSubmit(event){
 	var endDateInput = endDate.value;
 	var budgetInput = budget.value;
 
-	originCode = getAirportCode(origin.value);
-	destinationCode = getAirportCode(destination.value);
+	originCode = "LAX";//getAirportCode(origin.value);
+	destinationCode = "LON";//getAirportCode(destination.value);
 	destId = getDestId(destinationInput); //hotel dest_Id (booking)
 	console.log('Hi Sebastian');
 	console.log(destinationInput);
 	console.log("Searching origin=" + originInput);
 	console.log("Searching destination=" + destinationInput);
-	getFlight(originCode, destinationCode);
+	//getFlight(originCode, destinationCode);
 	console.log("Booking dest_ID for " + destinationInput);
 	getDestId(destinationInput);
 
