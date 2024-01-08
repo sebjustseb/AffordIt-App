@@ -1,8 +1,8 @@
 //main focus is to make sure we are acquiring data from our API
 var origin = document.querySelector('#origin');
 var destination = document.querySelector('#destination');
-var startDate = document.querySelector('#startDate');
-var endDate = document.querySelector('#endDate');
+var startDateEl = document.querySelector('#startDate');
+var endDateEl = document.querySelector('#endDate');
 var budget = document.querySelector('#budget');
 var searchBtn = document.querySelector('#search');
 var form = document.getElementById('#form');
@@ -57,6 +57,7 @@ async function getDestId(destination) {
 	}
 }
 
+
 async function getHotelId(){
 	console.log(startDateEl.value, endDateEl.value);
 	var startDate = dayjs(startDateEl.value).format('YYYY-MM-DD');
@@ -86,14 +87,14 @@ try {
 
 async function getHotelPrice() {
 	console.log(startDate.value, endDate.value);
-	startDate = dayjs(startDate.value).format('YYYY-MM-DD');
-	endDate = dayjs(endDate.value).format('YYYY-MM-DD');
-	var startDate2 = dayjs(startDate.value);
-	var endDate2 = dayjs(endDate.value);
+	startDate = dayjs(startDateEl.value).format('YYYY-MM-DD');
+	endDate = dayjs(endDateEl.value).format('YYYY-MM-DD');
+	var startDate2 = dayjs(startDate);
+	var endDate2 = dayjs(endDate);
 	console.log(startDate2, endDate2, bookHotelId);
 	var url = 'https://booking-com.p.rapidapi.com/v2/hotels/calendar-pricing?currency_code=USD&locale=en-us&checkin_date='+ startDate +'&hotel_id='+ bookHotelId +'&adults_number=1&checkout_date='+ endDate;
 	console.log(url);
-	var duration = startDate2.diff(endDate2, 'day');
+	var duration = endDate2.diff(startDate2, 'days');
 	console.log(duration + ' days');
 	var options = {
 		method: 'GET',
@@ -107,8 +108,21 @@ async function getHotelPrice() {
 		var response = await fetch(url, options);
 		var result = await response.json();
 		console.log(result);
-		bookHotelPrice = result.avDates[0];
-		console.log(bookHotelPrice);
+		var count = 0;
+		var total = 0;
+		bookHotelPrice = result.avDates;
+		bookHotelPrice.forEach( function ( m ) {
+			if (count < duration) { 
+			for ( const key in m ) {
+		  
+			  console.log( key ); // "who"
+			  console.log( m[key] ); // "Arthur"
+				total+=m[key];
+			}
+			}
+			count++;
+		  })
+		console.log(total);
 		return bookHotelPrice;
 	} catch (error) {
 		console.error(error);
