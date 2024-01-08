@@ -82,12 +82,13 @@ function displayResults (){
 		// document.location.replace("./searchresults.html");}
 }
 async function getFlight(sourceAirportCode, destinationAirportCode, date, returnDate, sortOrder = 'PRICE', numAdults = 1, currencyCode = 'USD') {
+	var flights = []
 	const url = `https://tripadvisor16.p.rapidapi.com/api/v1/flights/searchFlights?per_page=1&sourceAirportCode=${sourceAirportCode}&destinationAirportCode=${destinationAirportCode}&date=${date}&itineraryType=ROUND_TRIP&sortOrder=${sortOrder}&numAdults=${numAdults}&numSeniors=0&classOfService=ECONOMY&returnDate=${returnDate}&pageNumber=1&currencyCode=${currencyCode}`;
 	//var flightResults = data.flights.purchaseLinks.totalPrice
 	const options = {
 		method: 'GET',
 		headers: {
-			'X-RapidAPI-Key': '0cb37aec7cmsh25789bb5d9bc742p141261jsn7dd8dbf065f8',
+			'X-RapidAPI-Key': '9b85801173msha3a8626ebe4a7b5p1f1cddjsn2391049db4e4',
 			'X-RapidAPI-Host': 'tripadvisor16.p.rapidapi.com'
 		}
 	};
@@ -98,23 +99,28 @@ async function getFlight(sourceAirportCode, destinationAirportCode, date, return
 		// Check if the response is successful (status code 2xx)
 		if (response.ok) {
 			const result = await response.json();
+			//var priceCell.textContent = result[i].price;
 			console.log(result);
-			// // Loop through the result and create table rows
-			 //for (var i = 0; i < result.length; i++) {
-			   var priceCell.textContent = result[i].price;
+			console.log(result.data.flights[0].purchaseLinks[0].totalPrice);
+			if (result.data && result.data.length > 0) {
+                // Iterate through the flights and push relevant data to the 'flights' array
+                result.data.forEach(flight => {
+                    flights.push({
+                        airlinePrices: flight.prices,
+					});
+			})}
 		} else {
 			// Log the error status and status text
 			console.error(`Error: ${response.status} - ${response.statusText}`);
 		}
-	} catch (error) {
-		// Log any other unexpected errors
+
+	
+	} catch (error){
 		console.error(error);
-	}
-}
+	}}
 
 
 getFlight('BOM', 'DEL', '2024-01-18', '2024-01-22',);
-
 
 function getAirportCode(destination){
 var requestUrl = 'https://tripadvisor16.p.rapidapi.com/api/v1/flights/searchAirport?query=' + destination;
