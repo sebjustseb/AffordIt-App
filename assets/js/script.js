@@ -88,7 +88,7 @@ async function getFlight(sourceAirportCode, destinationAirportCode, date, return
 	const options = {
 		method: 'GET',
 		headers: {
-			'X-RapidAPI-Key': '9b85801173msha3a8626ebe4a7b5p1f1cddjsn2391049db4e4',
+			'X-RapidAPI-Key': '03e2f74d48mshb5f241feb218003p100a24jsnb34818a016f4',
 			'X-RapidAPI-Host': 'tripadvisor16.p.rapidapi.com'
 		}
 	};
