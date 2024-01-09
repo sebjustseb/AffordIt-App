@@ -112,7 +112,7 @@ async function getHotelId(){
 		console.log(result);
 		bookHotelId = result.results[0].id;
 		console.log('hotelId= '+ bookHotelId);
-		//hotelPrice = getHotelPrice();
+		hotelPrice = getHotelPrice();
 		return bookHotelId;
 	} catch (error) {
 		console.error(error);
@@ -180,7 +180,7 @@ async function getFlightPrice(originValue, destValue, startDateValue, endDateVal
 }
 
 //Function called when the Search is initiated
-function onFormSubmit(event){
+async function onFormSubmit(event){
 	event.preventDefault();
 	var originInput = origin.value;
 	var destinationInput = destination.value;
@@ -196,12 +196,12 @@ function onFormSubmit(event){
 	console.log("Searching destination=" + destinationInput);
 	
 	console.log("Booking dest_ID for " + destinationInput);
-	bookDestId = getDestId(destinationInput);
-	bookHotelPrice = 200;//getHotelPrice();
-	console.log('USD ' + bookHotelPrice);
+	bookDestId = await getDestId(destinationInput);
+	//bookHotelPrice = await getHotelPrice();
+	//console.log('USD ' + bookHotelPrice);
 	
 	//Calculate affordability
-	hotelPrice = bookHotelPrice;
+	//hotelPrice = bookHotelPrice;
 	isAffordable = getAffordability(budgetInput);
 
 	//Save search data localy
