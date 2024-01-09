@@ -10,6 +10,7 @@ var form = document.getElementById('#form');
 
 var destinationCode = '';
 var originCode = '';
+var bookDestId = '';
 var hotelPrice = 0;
 var flightPrice = 0;
 
@@ -77,7 +78,6 @@ async function getDestId(destination) {
 	};
 
 	try {
-		console.log('Hi Bryan');
 		var response = await fetch(url, options);
 		var result = await response.json();
 		console.log(result);
@@ -167,28 +167,13 @@ async function getHotelPrice() {
 async function getFlightPrice(originValue, destValue, startDateValue, endDateValue){
 	console.log("getting codes");
 	console.log(originValue);
-	//var locations =[];
-
-	// getAirportCode(originValue)
-  	// 	.then((originCode) => {
-	// 		locations.push(originCode);
-    // 		// return getAirportCode(destValue)
-	// 		// 	.then((destinationCode)=>{
-	// 		// 		locations.push(destinationCode);
-	// 		// 	});
-  	// 	})
-  	// 	.then(() => { //function (bestFlightPrice) {
-	// 	console.log(locations);
-	//return getFlight(originCode, destinationCode, startDateValue, endDateValue, 'PRICE', 1, 'USD');
-    //});
-
-
+	
 	originCode = await getAirportCode(originValue);
 	console.log(destValue);
 	destinationCode = await getAirportCode(destValue);
 	console.log("codes found?");
 
-	var bestFlightPrice = await getFlight("LAX", "LON", startDateValue, endDateValue, 'PRICE', 1, 'USD');
+	var bestFlightPrice = await getFlight(originCode, destinationCode, startDateValue, endDateValue, 'PRICE', 1, 'USD');
 	//getFlight('BOM', 'DEL', '2024-01-18', '2024-01-22', 'PRICE', 1, 'USD');
 	return bestFlightPrice;
 
@@ -206,14 +191,12 @@ function onFormSubmit(event){
 
 	flightPrice = getFlightPrice(originInput, destinationInput, startDateInput, endDateInput);
 
-	
-	console.log('Hi Sebastian');
 	console.log(destinationInput);
 	console.log("Searching origin=" + originInput);
 	console.log("Searching destination=" + destinationInput);
 	
 	console.log("Booking dest_ID for " + destinationInput);
-	//bookDestId = getDestId(destinationInput);
+	bookDestId = getDestId(destinationInput);
 	bookHotelPrice = 200;//getHotelPrice();
 	console.log('USD ' + bookHotelPrice);
 	
@@ -284,7 +267,7 @@ async function getFlight(sourceAirportCode, destinationAirportCode, date, return
 	}
 }
 
-function getAirportCode(destination){
+async function getAirportCode(destination){
 	var requestUrl = 'https://tripadvisor16.p.rapidapi.com/api/v1/flights/searchAirport?query=' + destination;
 
 	console.log("Searching destination=" + destination);
@@ -296,7 +279,6 @@ function getAirportCode(destination){
 			'X-RapidAPI-Host': 'tripadvisor16.p.rapidapi.com'
 		}
 	};
-	( async () => {
 		try {
 			console.log("awaiting fetch...");
 			var response = await fetch(requestUrl, options);
@@ -307,7 +289,6 @@ function getAirportCode(destination){
 		} catch (error) {
 			console.error(error);
 		}
-	})();
 }
 
 searchBtn.addEventListener("click", onFormSubmit);
