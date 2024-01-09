@@ -82,7 +82,7 @@ function displayResults (){
 		// document.location.replace("./searchresults.html");}
 }
 async function getFlight(sourceAirportCode, destinationAirportCode, date, returnDate, sortOrder = 'PRICE', numAdults = 1, currencyCode = 'USD') {
-	var flights = []
+	//var flights = []
 	const url = `https://tripadvisor16.p.rapidapi.com/api/v1/flights/searchFlights?per_page=1&sourceAirportCode=${sourceAirportCode}&destinationAirportCode=${destinationAirportCode}&date=${date}&itineraryType=ROUND_TRIP&sortOrder=${sortOrder}&numAdults=${numAdults}&numSeniors=0&classOfService=ECONOMY&returnDate=${returnDate}&pageNumber=1&currencyCode=${currencyCode}`;
 	//var flightResults = data.flights.purchaseLinks.totalPrice
 	const options = {
@@ -102,13 +102,11 @@ async function getFlight(sourceAirportCode, destinationAirportCode, date, return
 			//var priceCell.textContent = result[i].price;
 			console.log(result);
 			console.log(result.data.flights[0].purchaseLinks[0].totalPrice);
-			if (result.data && result.data.length > 0) {
-                // Iterate through the flights and push relevant data to the 'flights' array
-                result.data.forEach(flight => {
-                    flights.push({
-                        airlinePrices: flight.prices,
-					});
-			})}
+			if (result.data && result.data.flights && result.data.flights.length  > 0) {
+				var totalPrice = data.flights.purchaseLinks[0].totalPrice;
+				totalPrice.push(totalPrice);
+			};
+			console.log(totalPrice);
 		} else {
 			// Log the error status and status text
 			console.error(`Error: ${response.status} - ${response.statusText}`);
