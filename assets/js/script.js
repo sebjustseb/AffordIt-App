@@ -1,3 +1,5 @@
+var resultDiv = document.querySelector("#result");
+var hideDiv = document.getElementById('formSection');
 var origin = document.querySelector('#origin');
 var destination = document.querySelector('#destination');
 var startDateEl = document.querySelector('#startDate');
@@ -12,14 +14,43 @@ var hotelPrice = 0;
 var flightPrice = 0;
 
 
+function displayResult() {
+    if(isAffordable){
+        resultDiv.textContent = "Yes you can afford to go! Start packing for " + destination;
+    } else {
+        resultDiv.textContent = "Sorry keep saving...";
+    }
+}
+
+// Reads if successful from local storage and returns array user input.
+// Returns an empty array ([]) if there aren't any items.
+function readSavedSearchFromStorage() {
+    var search = localStorage.getItem('search');
+    console.log(search);
+    if (search) {
+      search = JSON.parse(search);
+      console.log(search);
+      isAffordable = search[0].canAfford;
+      destination = search[0].endCity;
+      console.log(isAffordable);
+
+      displayResult();
+    } else {
+      search = [];
+    }
+    return search;
+}
+
+
+
 //Locally store User Input used to search
-function saveUserInput(originCity, originCode, destinationCity, destinationCode, startDate, endDate, budget, isAffordable) {
+function saveUserInput(originCity, destinationCity, startDate, endDate, budget, isAffordable) {
 
 	var newSearch = {
 		startCity: originCity,
-		startCityCode: originCode,
+		//startCityCode: originCode,
 		endCity: destinationCity,
-		endCityCode: destinationCode,
+		//endCityCode: destinationCode,
 		startDate: startDate,
 		endDate: endDate,
 		budget: budget,
@@ -133,6 +164,36 @@ async function getHotelPrice() {
 	}
 }
 
+async function getFlightPrice(originValue, destValue, startDateValue, endDateValue){
+	console.log("getting codes");
+	console.log(originValue);
+	//var locations =[];
+
+	// getAirportCode(originValue)
+  	// 	.then((originCode) => {
+	// 		locations.push(originCode);
+    // 		// return getAirportCode(destValue)
+	// 		// 	.then((destinationCode)=>{
+	// 		// 		locations.push(destinationCode);
+	// 		// 	});
+  	// 	})
+  	// 	.then(() => { //function (bestFlightPrice) {
+	// 	console.log(locations);
+	//return getFlight(originCode, destinationCode, startDateValue, endDateValue, 'PRICE', 1, 'USD');
+    //});
+
+
+	originCode = await getAirportCode(originValue);
+	console.log(destValue);
+	destinationCode = await getAirportCode(destValue);
+	console.log("codes found?");
+
+	var bestFlightPrice = await getFlight("LAX", "LON", startDateValue, endDateValue, 'PRICE', 1, 'USD');
+	//getFlight('BOM', 'DEL', '2024-01-18', '2024-01-22', 'PRICE', 1, 'USD');
+	return bestFlightPrice;
+
+}
+
 //Function called when the Search is initiated
 function onFormSubmit(event){
 	event.preventDefault();
@@ -143,14 +204,14 @@ function onFormSubmit(event){
 	var budgetInput = budget.value;
 	var isAffordable = false;
 
-	originCode = "LAX";//getAirportCode(origin.value);
-	destinationCode = "LON";//getAirportCode(destination.value);
+	flightPrice = getFlightPrice(originInput, destinationInput, startDateInput, endDateInput);
+
+	
 	console.log('Hi Sebastian');
 	console.log(destinationInput);
 	console.log("Searching origin=" + originInput);
 	console.log("Searching destination=" + destinationInput);
-	//getFlight(originCode, destinationCode, startDateInput, endDateInput, 'PRICE', 1, 'USD');
-	//getFlight('BOM', 'DEL', '2024-01-18', '2024-01-22', 'PRICE', 1, 'USD');
+	
 	console.log("Booking dest_ID for " + destinationInput);
 	//bookDestId = getDestId(destinationInput);
 	bookHotelPrice = 200;//getHotelPrice();
@@ -158,12 +219,15 @@ function onFormSubmit(event){
 	
 	//Calculate affordability
 	hotelPrice = bookHotelPrice;
-	isAffordable = getAffordability(budgetInput)
+	isAffordable = getAffordability(budgetInput);
 
 	//Save search data localy
-	saveUserInput(originInput, originCode, destinationInput, destinationCode, startDateInput, endDateInput, budgetInput, isAffordable);
+	saveUserInput(originInput, destinationInput, startDateInput, endDateInput, budgetInput, isAffordable);
 	
-	displayResults();
+	resultDiv.textContent = "";
+	hideDiv.style.display = "none";
+	readSavedSearchFromStorage();
+	//displayResults();
 }
 
 function getAffordability(budget){
@@ -185,6 +249,7 @@ async function getFlight(sourceAirportCode, destinationAirportCode, date, return
 	//var flights = []
 	const url = `https://tripadvisor16.p.rapidapi.com/api/v1/flights/searchFlights?per_page=1&sourceAirportCode=${sourceAirportCode}&destinationAirportCode=${destinationAirportCode}&date=${date}&itineraryType=ROUND_TRIP&sortOrder=${sortOrder}&numAdults=${numAdults}&numSeniors=0&classOfService=ECONOMY&returnDate=${returnDate}&pageNumber=1&currencyCode=${currencyCode}`;
 	//var flightResults = data.flights.purchaseLinks.totalPrice
+	console.log(url);
 	const options = {
 		method: 'GET',
 		headers: {
@@ -203,11 +268,11 @@ async function getFlight(sourceAirportCode, destinationAirportCode, date, return
 			console.log(result);
 			console.log(result.data.flights[0].purchaseLinks[0].totalPrice);
 			if (result.data && result.data.flights && result.data.flights.length  > 0) {
-				var totalPrice = data.flights.purchaseLinks[0].totalPrice;
-				totalPrice.push(totalPrice);
+				var totalPrice = result.data.flights[0].purchaseLinks[0].totalPrice;
+				//totalPrice.push(totalPrice);
 			};
 			console.log(totalPrice);
-			flightPrice = totalPrice;
+			return totalPrice;
 		} else {
 			// Log the error status and status text
 			console.error(`Error: ${response.status} - ${response.statusText}`);
