@@ -1,3 +1,5 @@
+var resultDiv = document.querySelector("#result");
+var hideDiv = document.getElementById('formSection');
 var origin = document.querySelector('#origin');
 var destination = document.querySelector('#destination');
 var startDateEl = document.querySelector('#startDate');
@@ -10,6 +12,35 @@ var destinationCode = '';
 var originCode = '';
 var hotelPrice = 0;
 var flightPrice = 0;
+
+
+function displayResult() {
+    if(isAffordable){
+        resultDiv.textContent = "Yes you can afford to go! Start packing for " + destination;
+    } else {
+        resultDiv.textContent = "Sorry keep saving...";
+    }
+}
+
+// Reads if successful from local storage and returns array user input.
+// Returns an empty array ([]) if there aren't any items.
+function readSavedSearchFromStorage() {
+    var search = localStorage.getItem('search');
+    console.log(search);
+    if (search) {
+      search = JSON.parse(search);
+      console.log(search);
+      isAffordable = search[0].canAfford;
+      destination = search[0].endCity;
+      console.log(isAffordable);
+
+      displayResult();
+    } else {
+      search = [];
+    }
+    return search;
+}
+
 
 
 //Locally store User Input used to search
@@ -143,8 +174,8 @@ function onFormSubmit(event){
 	var budgetInput = budget.value;
 	var isAffordable = false;
 
-	originCode = "LAX";//getAirportCode(origin.value);
-	destinationCode = "LON";//getAirportCode(destination.value);
+	originCode = getAirportCode(origin.value);
+	destinationCode = getAirportCode(destination.value);
 	console.log('Hi Sebastian');
 	console.log(destinationInput);
 	console.log("Searching origin=" + originInput);
@@ -163,7 +194,10 @@ function onFormSubmit(event){
 	//Save search data localy
 	saveUserInput(originInput, originCode, destinationInput, destinationCode, startDateInput, endDateInput, budgetInput, isAffordable);
 	
-	displayResults();
+	resultDiv.textContent = "";
+	hideDiv.style.display = "none";
+	readSavedSearchFromStorage();
+	//displayResults();
 }
 
 function getAffordability(budget){
