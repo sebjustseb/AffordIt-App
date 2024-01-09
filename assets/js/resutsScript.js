@@ -14,10 +14,11 @@ function displayResult() {
 // Returns an empty array ([]) if there aren't any items.
 function readSavedSearchFromStorage() {
     var search = localStorage.getItem('search');
+    console.log(search);
     if (search) {
       search = JSON.parse(search);
       console.log(search);
-      isAffordable = true;//search[0].canAfford;
+      isAffordable = search[0].canAfford;
       destination = search[0].endCity;
       console.log(isAffordable);
 
