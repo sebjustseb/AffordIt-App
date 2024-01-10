@@ -10,12 +10,9 @@ var form = document.getElementById('#form');
 
 var destinationCode = '';
 var originCode = '';
-var bookDestId = '';
-var hotelPrice = 0;
-var flightPrice = 0;
 
 
-function displayResult() {
+function displayResult(isAffordable) {
     if(isAffordable){
         resultDiv.textContent = "Yes you can afford to go! Start packing for " + destination;
     } else {
@@ -25,7 +22,7 @@ function displayResult() {
 
 // Reads if successful from local storage and returns array user input.
 // Returns an empty array ([]) if there aren't any items.
-function readSavedSearchFromStorage() {
+async function readSavedSearchFromStorage() {
     var search = localStorage.getItem('search');
     console.log(search);
     if (search) {
@@ -35,7 +32,7 @@ function readSavedSearchFromStorage() {
       destination = search[0].endCity;
       console.log(isAffordable);
 
-      displayResult();
+      displayResult(isAffordable);
     } else {
       search = [];
     }
@@ -49,9 +46,7 @@ function saveUserInput(originCity, destinationCity, startDate, endDate, budget, 
 
 	var newSearch = {
 		startCity: originCity,
-		//startCityCode: originCode,
 		endCity: destinationCity,
-		//endCityCode: destinationCode,
 		startDate: startDate,
 		endDate: endDate,
 		budget: budget,
@@ -68,7 +63,7 @@ function saveUserInput(originCity, destinationCity, startDate, endDate, budget, 
 // Function used to get destination code for Hotels
 async function getDestId(destination) {
 	var url = 'https://booking-com.p.rapidapi.com/v1/hotels/locations?locale=en-us&name=' + destination;
-	console.log("Hotel dest_id = ");
+	console.log("Hotel dest_id = "+destination);
 	var options = {
 		method: 'GET',
 		headers: {
@@ -83,7 +78,7 @@ async function getDestId(destination) {
 		console.log(result);
 		bookDestId = result[0].dest_id;
 		console.log('destID= '+ bookDestId);
-		bookHotelId = getHotelId();
+		
 		return bookDestId;
 	} catch (error) {
 		console.error(error);
@@ -91,7 +86,7 @@ async function getDestId(destination) {
 }
 
 //Get Hotel id for cheapest hotel for the specific dates
-async function getHotelId(){
+async function getHotelId(bookDestId){
 	console.log(startDateEl.value, endDateEl.value);
 	var startDate = dayjs(startDateEl.value).format('YYYY-MM-DD');
 	var endDate = dayjs(endDateEl.value).format('YYYY-MM-DD');
@@ -112,7 +107,7 @@ async function getHotelId(){
 		console.log(result);
 		bookHotelId = result.results[0].id;
 		console.log('hotelId= '+ bookHotelId);
-		hotelPrice = getHotelPrice();
+		
 		return bookHotelId;
 	} catch (error) {
 		console.error(error);
@@ -120,7 +115,7 @@ async function getHotelId(){
 }
 
 //Calculate hotel price by adding the amount of days and price per day
-async function getHotelPrice() {
+async function getHotelPrice(bookHotelId) {
 	console.log(startDate.value, endDate.value);
 	startDate = dayjs(startDateEl.value).format('YYYY-MM-DD');
 	endDate = dayjs(endDateEl.value).format('YYYY-MM-DD');
@@ -158,10 +153,22 @@ async function getHotelPrice() {
 			count++;
 		})
 		console.log(total);
-		return bookHotelPrice;
+		hotelPrice = total;
+		return total;
 	} catch (error) {
 		console.error(error);
 	}
+}
+
+async function getTotalHotelPrice(destInput) {
+	console.log(destInput);
+	console.log("Searching destination=" + destInput);
+	var destId = await getDestId(destInput);
+	var hotelId = await getHotelId(destId);
+	var hotelPrice = await getHotelPrice(hotelId);
+	console.log('USD ' + hotelPrice);
+
+	return hotelPrice;
 }
 
 async function getFlightPrice(originValue, destValue, startDateValue, endDateValue){
@@ -187,46 +194,33 @@ async function onFormSubmit(event){
 	var startDateInput = startDateEl.value;
 	var endDateInput = endDateEl.value;
 	var budgetInput = budget.value;
-	var isAffordable = false;
 
-	flightPrice = getFlightPrice(originInput, destinationInput, startDateInput, endDateInput);
+	var flightPrice = await getFlightPrice(originInput, destinationInput, startDateInput, endDateInput);
+	var totalHotelPrice = await getTotalHotelPrice(destinationInput);
 
-	console.log(destinationInput);
-	console.log("Searching origin=" + originInput);
-	console.log("Searching destination=" + destinationInput);
-	
-	console.log("Booking dest_ID for " + destinationInput);
-	bookDestId = await getDestId(destinationInput);
-	//bookHotelPrice = await getHotelPrice();
-	//console.log('USD ' + bookHotelPrice);
-	
-	//Calculate affordability
-	//hotelPrice = bookHotelPrice;
-	isAffordable = getAffordability(budgetInput);
+	var isAffordable = await getAffordability(budgetInput, flightPrice, totalHotelPrice);
 
-	//Save search data localy
-	saveUserInput(originInput, destinationInput, startDateInput, endDateInput, budgetInput, isAffordable);
-	
-	resultDiv.textContent = "";
-	hideDiv.style.display = "none";
-	readSavedSearchFromStorage();
-	//displayResults();
+	if(isAffordable != "undefined") {
+		//Save search data localy
+		saveUserInput(originInput, destinationInput, startDateInput, endDateInput, budgetInput, isAffordable);
+		
+		resultDiv.textContent = "";
+		hideDiv.style.display = "none";
+		readSavedSearchFromStorage();
+	}
 }
 
-function getAffordability(budget){
-	var totalCost = hotelPrice + flightPrice;
+async function getAffordability(budget, fPrice, hPrice){
+	var totalCost = hPrice + fPrice;
 	console.log("totalCost=" + totalCost);
 
 	if(budget > totalCost){
 		return true;
+	} else{
+		return false;
 	}
 }
 
-//Show results page
-function displayResults () {
-	console.log("Display Attempt")
-	document.location.replace("./searchresults.html");
-}
 
 async function getFlight(sourceAirportCode, destinationAirportCode, date, returnDate, sortOrder, numAdults, currencyCode) {
 	//var flights = []
